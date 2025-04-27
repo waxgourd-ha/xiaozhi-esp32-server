@@ -6,7 +6,7 @@ WORKDIR /app
 COPY main/xiaozhi-server/requirements.txt .
 
 # 安装Python依赖
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
 
 # 第二阶段：生产镜像
 FROM python:3.10-slim
