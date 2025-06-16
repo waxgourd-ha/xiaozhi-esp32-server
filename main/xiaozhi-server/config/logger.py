@@ -5,7 +5,7 @@ from config.config_loader import load_config
 from config.settings import check_config_file
 from datetime import datetime
 
-SERVER_VERSION = "0.5.5"
+SERVER_VERSION = "0.5.6"
 _logger_initialized = False
 
 
@@ -114,6 +114,7 @@ def update_module_string(selected_module_str):
     current_module = logger._core.extra["selected_module"]
 
     if current_module == selected_module_str:
+        logger.debug(f"组件未更改无需更新")
         return
 
     try:
