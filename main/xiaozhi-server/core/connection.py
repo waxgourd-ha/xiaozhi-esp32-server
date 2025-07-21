@@ -17,6 +17,7 @@ from core.utils.util import (
     filter_sensitive_info,
 )
 from typing import Dict, Any
+from collections import deque
 from core.utils.modules_initialize import (
     initialize_modules,
     initialize_tts,
@@ -34,8 +35,10 @@ from plugins_func.register import Action, ActionResponse
 from core.auth import AuthMiddleware, AuthenticationError
 from config.config_loader import get_private_config_from_api
 from core.providers.tts.dto.dto import ContentType, TTSMessageDTO, SentenceType
-from config.logger import setup_logging, build_module_string, update_module_string
+from config.logger import setup_logging, build_module_string, create_connection_logger
 from config.manage_api_client import DeviceNotFoundException, DeviceBindException
+from core.utils.prompt_manager import PromptManager
+from core.utils.voiceprint_provider import VoiceprintProvider
 
 
 TAG = __name__
@@ -73,7 +76,6 @@ class ConnectionHandler:
         self.headers = None
         self.device_id = None
         self.client_ip = None
-        self.client_ip_info = {}
         self.prompt = None
         self.welcome_msg = None
         self.max_output_size = 0
@@ -107,11 +109,16 @@ class ConnectionHandler:
         self.memory = _memory
         self.intent = _intent
 
+        # 为每个连接单独管理声纹识别
+        self.voiceprint_provider = None
+
         # vad相关变量
         self.client_audio_buffer = bytearray()
         self.client_have_voice = False
         self.last_activity_time = 0.0  # 统一的活动时间戳（毫秒）
         self.client_voice_stop = False
+        self.client_voice_window = deque(maxlen=5)
+        self.last_is_voice = False
 
         # asr相关变量
         # 因为实际部署时可能会用到公共的本地ASR，不能把变量暴露给公共ASR
@@ -148,6 +155,9 @@ class ConnectionHandler:
 
         # {"mcp":true} 表示启用MCP功能
         self.features = None
+
+        # 初始化提示词管理器
+        self.prompt_manager = PromptManager(config, self.logger)
 
     async def handle_connection(self, ws):
         try:
@@ -324,13 +334,16 @@ class ConnectionHandler:
             self.selected_module_str = build_module_string(
                 self.config.get("selected_module", {})
             )
-            update_module_string(self.selected_module_str)
+            self.logger = create_connection_logger(self.selected_module_str)
+            
             """初始化组件"""
             if self.config.get("prompt") is not None:
-                self.prompt = self.config["prompt"]
-                self.change_system_prompt(self.prompt)
+                user_prompt = self.config["prompt"]
+                # 使用快速提示词进行初始化
+                prompt = self.prompt_manager.get_quick_prompt(user_prompt)
+                self.change_system_prompt(prompt)
                 self.logger.bind(tag=TAG).info(
-                    f"初始化组件: prompt成功 {self.prompt[:50]}..."
+                    f"快速初始化组件: prompt成功 {prompt[:50]}..."
                 )
 
             """初始化本地组件"""
@@ -338,6 +351,10 @@ class ConnectionHandler:
                 self.vad = self._vad
             if self.asr is None:
                 self.asr = self._initialize_asr()
+            
+            # 初始化声纹识别
+            self._initialize_voiceprint()
+            
             # 打开语音识别通道
             asyncio.run_coroutine_threadsafe(
                 self.asr.open_audio_channels(self), self.loop
@@ -355,8 +372,21 @@ class ConnectionHandler:
             self._initialize_intent()
             """初始化上报线程"""
             self._init_report_threads()
+            """更新系统提示词"""
+            self._init_prompt_enhancement()
+
         except Exception as e:
             self.logger.bind(tag=TAG).error(f"实例化组件失败: {e}")
+
+    def _init_prompt_enhancement(self):
+        # 更新上下文信息
+        self.prompt_manager.update_context_info(self, self.client_ip)
+        enhanced_prompt = self.prompt_manager.build_enhanced_prompt(
+            self.config["prompt"], self.device_id, self.client_ip
+        )
+        if enhanced_prompt:
+            self.change_system_prompt(enhanced_prompt)
+            self.logger.bind(tag=TAG).info("系统提示词已增强更新")
 
     def _init_report_threads(self):
         """初始化ASR和TTS上报线程"""
@@ -394,6 +424,18 @@ class ConnectionHandler:
             asr = initialize_asr(self.config)
 
         return asr
+
+    def _initialize_voiceprint(self):
+        """为当前连接初始化声纹识别"""
+        try:
+            voiceprint_config = self.config.get("voiceprint", {})
+            if voiceprint_config:
+                self.voiceprint_provider = VoiceprintProvider(voiceprint_config)
+                self.logger.bind(tag=TAG).info("声纹识别功能已在连接时动态启用")
+            else:
+                self.logger.bind(tag=TAG).info("声纹识别功能未启用或配置不完整")
+        except Exception as e:
+            self.logger.bind(tag=TAG).warning(f"声纹识别初始化失败: {str(e)}")
 
     def _initialize_private_config(self):
         """如果是从配置文件获取，则进行二次实例化"""
@@ -455,6 +497,11 @@ class ConnectionHandler:
             self.config["selected_module"]["LLM"] = private_config["selected_module"][
                 "LLM"
             ]
+        if private_config.get("VLLM", None) is not None:
+            self.config["VLLM"] = private_config["VLLM"]
+            self.config["selected_module"]["VLLM"] = private_config["selected_module"][
+                "VLLM"
+            ]
         if private_config.get("Memory", None) is not None:
             init_memory = True
             self.config["Memory"] = private_config["Memory"]
@@ -477,6 +524,9 @@ class ConnectionHandler:
                 ] = plugin_from_server.keys()
         if private_config.get("prompt", None) is not None:
             self.config["prompt"] = private_config["prompt"]
+        # 获取声纹信息
+        if private_config.get("voiceprint", None) is not None:
+            self.config["voiceprint"] = private_config["voiceprint"]
         if private_config.get("summaryMemory", None) is not None:
             self.config["summaryMemory"] = private_config["summaryMemory"]
         if private_config.get("device_max_output_size", None) is not None:
@@ -608,12 +658,23 @@ class ConnectionHandler:
         # 更新系统prompt至上下文
         self.dialogue.update_system_message(self.prompt)
 
-    def chat(self, query, tool_call=False):
+    def chat(self, query, tool_call=False, depth=0):
         self.logger.bind(tag=TAG).info(f"大模型收到用户消息: {query}")
         self.llm_finish_task = False
 
         if not tool_call:
             self.dialogue.put(Message(role="user", content=query))
+
+        # 为最顶层时新建会话ID和发送FIRST请求
+        if depth == 0:
+            self.sentence_id = str(uuid.uuid4().hex)
+            self.tts.tts_text_queue.put(
+                TTSMessageDTO(
+                    sentence_id=self.sentence_id,
+                    sentence_type=SentenceType.FIRST,
+                    content_type=ContentType.ACTION,
+                )
+            )
 
         # Define intent functions
         functions = None
@@ -630,19 +691,21 @@ class ConnectionHandler:
                 )
                 memory_str = future.result()
 
-            self.sentence_id = str(uuid.uuid4().hex)
-
             if self.intent_type == "function_call" and functions is not None:
                 # 使用支持functions的streaming接口
                 llm_responses = self.llm.response_with_functions(
                     self.session_id,
-                    self.dialogue.get_llm_dialogue_with_memory(memory_str),
+                    self.dialogue.get_llm_dialogue_with_memory(
+                        memory_str, self.config.get("voiceprint", {})
+                    ),
                     functions=functions,
                 )
             else:
                 llm_responses = self.llm.response(
                     self.session_id,
-                    self.dialogue.get_llm_dialogue_with_memory(memory_str),
+                    self.dialogue.get_llm_dialogue_with_memory(
+                        memory_str, self.config.get("voiceprint", {})
+                    ),
                 )
         except Exception as e:
             self.logger.bind(tag=TAG).error(f"LLM 处理出错 {query}: {e}")
@@ -654,7 +717,6 @@ class ConnectionHandler:
         function_id = None
         function_arguments = ""
         content_arguments = ""
-        text_index = 0
         self.client_abort = False
         for response in llm_responses:
             if self.client_abort:
@@ -684,14 +746,6 @@ class ConnectionHandler:
             if content is not None and len(content) > 0:
                 if not tool_call_flag:
                     response_message.append(content)
-                    if text_index == 0:
-                        self.tts.tts_text_queue.put(
-                            TTSMessageDTO(
-                                sentence_id=self.sentence_id,
-                                sentence_type=SentenceType.FIRST,
-                                content_type=ContentType.ACTION,
-                            )
-                        )
                     self.tts.tts_text_queue.put(
                         TTSMessageDTO(
                             sentence_id=self.sentence_id,
@@ -700,7 +754,6 @@ class ConnectionHandler:
                             content_detail=content,
                         )
                     )
-                    text_index += 1
         # 处理function call
         if tool_call_flag:
             bHasError = False
@@ -725,6 +778,11 @@ class ConnectionHandler:
                         f"function call error: {content_arguments}"
                     )
             if not bHasError:
+                # 如需要大模型先处理一轮，添加相关处理后的日志情况
+                if len(response_message) > 0:
+                    self.dialogue.put(
+                        Message(role="assistant", content="".join(response_message))
+                    )
                 response_message.clear()
                 self.logger.bind(tag=TAG).debug(
                     f"function_name={function_name}, function_id={function_id}, function_arguments={function_arguments}"
@@ -742,14 +800,14 @@ class ConnectionHandler:
                     ),
                     self.loop,
                 ).result()
-                self._handle_function_result(result, function_call_data)
+                self._handle_function_result(result, function_call_data, depth=depth)
 
         # 存储对话内容
         if len(response_message) > 0:
             self.dialogue.put(
                 Message(role="assistant", content="".join(response_message))
             )
-        if text_index > 0:
+        if depth == 0:
             self.tts.tts_text_queue.put(
                 TTSMessageDTO(
                     sentence_id=self.sentence_id,
@@ -758,13 +816,16 @@ class ConnectionHandler:
                 )
             )
         self.llm_finish_task = True
+        # 使用lambda延迟计算，只有在DEBUG级别时才执行get_llm_dialogue()
         self.logger.bind(tag=TAG).debug(
-            json.dumps(self.dialogue.get_llm_dialogue(), indent=4, ensure_ascii=False)
+            lambda: json.dumps(
+                self.dialogue.get_llm_dialogue(), indent=4, ensure_ascii=False
+            )
         )
 
         return True
 
-    def _handle_function_result(self, result, function_call_data):
+    def _handle_function_result(self, result, function_call_data, depth):
         if result.action == Action.RESPONSE:  # 直接回复前端
             text = result.response
             self.tts.tts_one_sentence(self, ContentType.TEXT, content_detail=text)
@@ -801,7 +862,7 @@ class ConnectionHandler:
                         content=text,
                     )
                 )
-                self.chat(text, tool_call=True)
+                self.chat(text, tool_call=True, depth=depth + 1)
         elif result.action == Action.NOTFOUND or result.action == Action.ERROR:
             text = result.response if result.response else result.result
             self.tts.tts_one_sentence(self, ContentType.TEXT, content_detail=text)
@@ -817,14 +878,13 @@ class ConnectionHandler:
                 item = self.report_queue.get(timeout=1)
                 if item is None:  # 检测毒丸对象
                     break
-                type, text, audio_data, report_time = item
                 try:
                     # 检查线程池状态
                     if self.executor is None:
                         continue
                     # 提交任务到线程池
                     self.executor.submit(
-                        self._process_report, type, text, audio_data, report_time
+                        self._process_report, *item
                     )
                 except Exception as e:
                     self.logger.bind(tag=TAG).error(f"聊天记录上报线程异常: {e}")
@@ -913,6 +973,9 @@ class ConnectionHandler:
                         pass
             except Exception as ws_error:
                 self.logger.bind(tag=TAG).error(f"关闭WebSocket连接时出错: {ws_error}")
+
+            if self.tts:
+                await self.tts.close()
 
             # 最后关闭线程池（避免阻塞）
             if self.executor:

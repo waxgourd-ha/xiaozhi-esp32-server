@@ -3,10 +3,10 @@
 <h1 align="center">小智后端服务xiaozhi-esp32-server</h1>
 
 <p align="center">
-本项目为开源智能硬件项目
+本项目基于人机共生智能理论和技术研发智能终端软硬件体系<br/>为开源智能硬件项目
 <a href="https://github.com/78/xiaozhi-esp32">xiaozhi-esp32</a>提供后端服务<br/>
 根据<a href="https://ccnphfhqs21z.feishu.cn/wiki/M0XiwldO9iJwHikpXD5cEx71nKh">小智通信协议</a>使用Python、Java、Vue实现<br/>
-帮助您快速搭建小智服务器
+支持MCP接入点和声纹识别
 </p>
 
 <p align="center">
@@ -35,6 +35,14 @@
   <a href="https://github.com/xinnan-tech/xiaozhi-esp32-server">
     <img alt="stars" src="https://img.shields.io/github/stars/xinnan-tech/xiaozhi-esp32-server?color=ffcb47&labelColor=black" />
   </a>
+</p>
+
+<p align="center">
+By Professor Siyuan Liu Research and Development Group ( South China University of Technology)
+</br>
+刘思源教授团队研发（华南理工大学）
+</br>
+<img src="./docs/images/hnlg.jpg" alt="华南理工大学" width="50%">
 </p>
 
 ---
@@ -144,13 +152,18 @@
         </a>
     </td>
     <td>
-          <a href="https://www.bilibili.com/video/BV1ZQKUzYExM" target="_blank">
+        <a href="https://www.bilibili.com/video/BV1ZQKUzYExM" target="_blank">
          <picture>
            <img alt="MCP接入点" src="docs/images/demo13.png" />
          </picture>
         </a>
     </td>
     <td>
+        <a href="https://www.bilibili.com/video/BV1Exu3zqEDe" target="_blank">
+         <picture>
+           <img alt="声纹识别" src="docs/images/demo14.png" />
+         </picture>
+        </a>
     </td>
   </tr>
 </table>
@@ -176,7 +189,7 @@
 | 部署方式 | 特点 | 适用场景 | 部署文档 | 配置要求 | 视频教程 | 
 |---------|------|---------|---------|---------|---------|
 | **最简化安装** | 智能对话、IOT、MCP、视觉感知 | 低配置环境，数据存储在配置文件，无需数据库 | [①Docker版](./docs/Deployment.md#%E6%96%B9%E5%BC%8F%E4%B8%80docker%E5%8F%AA%E8%BF%90%E8%A1%8Cserver) / [②源码部署](./docs/Deployment.md#%E6%96%B9%E5%BC%8F%E4%BA%8C%E6%9C%AC%E5%9C%B0%E6%BA%90%E7%A0%81%E5%8F%AA%E8%BF%90%E8%A1%8Cserver)| 如果使用`FunASR`要2核4G，如果全API，要2核2G | - | 
-| **全模块安装** | 智能对话、IOT、MCP接入点、视觉感知、OTA、智控台 | 完整功能体验，数据存储在数据库 |[①Docker版](./docs/Deployment_all.md#%E6%96%B9%E5%BC%8F%E4%B8%80docker%E8%BF%90%E8%A1%8C%E5%85%A8%E6%A8%A1%E5%9D%97) / [②源码部署](./docs/Deployment_all.md#%E6%96%B9%E5%BC%8F%E4%BA%8C%E6%9C%AC%E5%9C%B0%E6%BA%90%E7%A0%81%E8%BF%90%E8%A1%8C%E5%85%A8%E6%A8%A1%E5%9D%97) / [③源码部署自动更新教程](./docs/dev-ops-integration.md) | 如果使用`FunASR`要4核8G，如果全API，要2核4G| [本地源码启动视频教程](https://www.bilibili.com/video/BV1wBJhz4Ewe) | 
+| **全模块安装** | 智能对话、IOT、MCP接入点、声纹识别、视觉感知、OTA、智控台 | 完整功能体验，数据存储在数据库 |[①Docker版](./docs/Deployment_all.md#%E6%96%B9%E5%BC%8F%E4%B8%80docker%E8%BF%90%E8%A1%8C%E5%85%A8%E6%A8%A1%E5%9D%97) / [②源码部署](./docs/Deployment_all.md#%E6%96%B9%E5%BC%8F%E4%BA%8C%E6%9C%AC%E5%9C%B0%E6%BA%90%E7%A0%81%E8%BF%90%E8%A1%8C%E5%85%A8%E6%A8%A1%E5%9D%97) / [③源码部署自动更新教程](./docs/dev-ops-integration.md) | 如果使用`FunASR`要4核8G，如果全API，要2核4G| [本地源码启动视频教程](https://www.bilibili.com/video/BV1wBJhz4Ewe) | 
 
 
 > 💡 提示：以下是按最新代码部署后的测试平台，有需要可烧录测试，并发为6个，每天会清空数据
@@ -225,11 +238,12 @@ Websocket接口地址: wss://2662r3426b.vicp.fun/xiaozhi/v1/
 
 | 功能模块 | 描述 |
 |:---:|:---|
-| 核心服务架构 | 基于WebSocket和HTTP服务器，提供完整的控制台管理和认证系统 |
-| 语音交互系统 | 支持流式ASR(语音识别)、流式TTS(语音合成)、VAD(语音活动检测)，支持多语言识别和语音处理 |
-| 智能对话系统 | 支持多种LLM(大语言模型)，实现智能对话 |
-| 视觉感知系统 | 支持多种VLLM(视觉大模型)，实现多模态交互 |
-| 意图识别系统 | 支持LLM意图识别、Function Call函数调用，提供插件化意图处理机制 |
+| 核心架构 | 基于WebSocket和HTTP服务器，提供完整的控制台管理和认证系统 |
+| 语音交互 | 支持流式ASR(语音识别)、流式TTS(语音合成)、VAD(语音活动检测)，支持多语言识别和语音处理 |
+| 声纹识别 | 支持多用户声纹注册、管理和识别，与ASR并行处理，实时识别说话人身份并传递给LLM进行个性化回应 |
+| 智能对话 | 支持多种LLM(大语言模型)，实现智能对话 |
+| 视觉感知 | 支持多种VLLM(视觉大模型)，实现多模态交互 |
+| 意图识别 | 支持LLM意图识别、Function Call函数调用，提供插件化意图处理机制 |
 | 记忆系统 | 支持本地短期记忆、mem0ai接口记忆，具备记忆总结功能 |
 | 工具调用 | 支持客户端IOT协议、客户MCP协议、服务端MCP协议、MCP接入点协议、自定义工具函数 |
 | 管理后台 | 提供Web管理界面，支持用户管理、系统配置和设备管理 |
@@ -305,6 +319,14 @@ Websocket接口地址: wss://2662r3426b.vicp.fun/xiaozhi/v1/
 |:---:|:---:|:---:|
 | 本地使用 | FunASR、SherpaASR | FunASR、SherpaASR |
 | 接口调用 | DoubaoASR、FunASRServer、TencentASR、AliyunASR | FunASRServer |
+
+---
+
+### Voiceprint 声纹识别
+
+| 使用方式 | 支持平台 | 免费平台 |
+|:---:|:---:|:---:|
+| 本地使用 | 3D-Speaker | 3D-Speaker |
 
 ---
 
