@@ -39,7 +39,7 @@ from config.logger import setup_logging, build_module_string, create_connection_
 from config.manage_api_client import DeviceNotFoundException, DeviceBindException
 from core.utils.prompt_manager import PromptManager
 from core.utils.voiceprint_provider import VoiceprintProvider
-
+from core.utils import textUtils
 
 TAG = __name__
 
@@ -718,6 +718,7 @@ class ConnectionHandler:
         function_arguments = ""
         content_arguments = ""
         self.client_abort = False
+        emotion_flag = True
         for response in llm_responses:
             if self.client_abort:
                 break
@@ -743,6 +744,15 @@ class ConnectionHandler:
                         function_arguments += tools_call[0].function.arguments
             else:
                 content = response
+
+            # 在llm回复中获取情绪表情，一轮对话只在开头获取一次
+            if emotion_flag:
+                asyncio.run_coroutine_threadsafe(
+                    textUtils.get_emotion(self, content),
+                    self.loop,
+                )
+                emotion_flag = False
+
             if content is not None and len(content) > 0:
                 if not tool_call_flag:
                     response_message.append(content)

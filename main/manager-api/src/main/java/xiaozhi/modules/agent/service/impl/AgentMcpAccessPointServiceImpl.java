@@ -65,6 +65,7 @@ public class AgentMcpAccessPointServiceImpl implements AgentMcpAccessPointServic
             try (WebSocketClientManager client = WebSocketClientManager.build(
                     new WebSocketClientManager.Builder()
                             .uri(wsUrl)
+                            .bufferSize(1024 * 1024)
                             .connectTimeout(8, TimeUnit.SECONDS)
                             .maxSessionDuration(10, TimeUnit.SECONDS))) {
 
