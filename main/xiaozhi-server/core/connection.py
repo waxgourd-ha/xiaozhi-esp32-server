@@ -859,7 +859,7 @@ class ConnectionHandler:
                             {
                                 "id": function_id,
                                 "function": {
-                                    "arguments": function_arguments,
+                                    "arguments": "{}" if function_arguments == "" else function_arguments,
                                     "name": function_name,
                                 },
                                 "type": "function",

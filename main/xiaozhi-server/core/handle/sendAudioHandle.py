@@ -21,8 +21,6 @@ async def sendAudioMessage(conn, sentenceType, audios, text):
 
     await sendAudio(conn, audios, pre_buffer)
 
-    await send_tts_message(conn, "sentence_end", text)
-
     # 发送结束消息（如果是最后一个文本）
     if conn.llm_finish_task and sentenceType == SentenceType.LAST:
         await send_tts_message(conn, "stop", None)
