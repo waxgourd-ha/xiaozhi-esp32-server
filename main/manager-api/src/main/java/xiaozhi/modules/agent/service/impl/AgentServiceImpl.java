@@ -20,6 +20,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.AllArgsConstructor;
 import xiaozhi.common.constant.Constant;
 import xiaozhi.common.exception.RenException;
+import xiaozhi.common.exception.ErrorCode;
 import xiaozhi.common.page.PageData;
 import xiaozhi.common.redis.RedisKeys;
 import xiaozhi.common.redis.RedisUtils;
@@ -74,7 +75,7 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
         AgentInfoVO agent = agentDao.selectAgentInfoById(id);
 
         if (agent == null) {
-            throw new RenException("智能体不存在");
+            throw new RenException(ErrorCode.AGENT_NOT_FOUND);
         }
 
         if (agent.getMemModelId() != null && agent.getMemModelId().equals(Constant.MEMORY_NO_MEM)) {
@@ -204,7 +205,7 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
         // 先查询现有实体
         AgentEntity existingEntity = this.getAgentById(agentId);
         if (existingEntity == null) {
-            throw new RuntimeException("智能体不存在");
+            throw new RenException(ErrorCode.AGENT_NOT_FOUND);
         }
 
         // 只更新提供的非空字段
@@ -328,7 +329,7 @@ public class AgentServiceImpl extends BaseServiceImpl<AgentDao, AgentEntity> imp
 
         boolean b = validateLLMIntentParams(dto.getLlmModelId(), dto.getIntentModelId());
         if (!b) {
-            throw new RenException("LLM大模型和Intent意图识别，选择参数不匹配");
+            throw new RenException(ErrorCode.LLM_INTENT_PARAMS_MISMATCH);
         }
         this.updateById(existingEntity);
     }

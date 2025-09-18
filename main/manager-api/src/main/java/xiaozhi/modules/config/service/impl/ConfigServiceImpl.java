@@ -70,7 +70,7 @@ public class ConfigServiceImpl implements ConfigService {
         // 查询默认智能体
         AgentTemplateEntity agent = agentTemplateService.getDefaultTemplate();
         if (agent == null) {
-            throw new RenException("默认智能体未找到");
+            throw new RenException(ErrorCode.DEFAULT_AGENT_NOT_FOUND);
         }
 
         // 构建模块配置
@@ -113,7 +113,7 @@ public class ConfigServiceImpl implements ConfigService {
         // 获取智能体信息
         AgentEntity agent = agentService.getAgentById(device.getAgentId());
         if (agent == null) {
-            throw new RenException("智能体未找到");
+            throw new RenException(ErrorCode.AGENT_NOT_FOUND);
         }
         // 获取音色信息
         String voice = null;
@@ -298,6 +298,20 @@ public class ConfigServiceImpl implements ConfigService {
             Map<String, Object> voiceprintConfig = new HashMap<>();
             voiceprintConfig.put("url", voiceprintUrl);
             voiceprintConfig.put("speakers", speakers);
+            
+            // 获取声纹识别相似度阈值，默认0.4
+            String thresholdStr = sysParamsService.getValue("server.voiceprint_similarity_threshold", true);
+            if (StringUtils.isNotBlank(thresholdStr) && !"null".equals(thresholdStr)) {
+                try {
+                    double threshold = Double.parseDouble(thresholdStr);
+                    voiceprintConfig.put("similarity_threshold", threshold);
+                } catch (NumberFormatException e) {
+                    // 如果解析失败，使用默认值0.4
+                    voiceprintConfig.put("similarity_threshold", 0.4);
+                }
+            } else {
+                voiceprintConfig.put("similarity_threshold", 0.4);
+            }
 
             result.put("voiceprint", voiceprintConfig);
         } catch (Exception e) {
