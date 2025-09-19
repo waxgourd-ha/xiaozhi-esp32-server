@@ -16,8 +16,8 @@
         <div class="content-area">
           <el-card class="user-card" shadow="never">
             <el-table ref="userTable" :data="userList" class="transparent-table" v-loading="loading"
-                :element-loading-text="$t('modelConfig.loading')" element-loading-spinner="el-icon-loading"
-                element-loading-background="rgba(255, 255, 255, 0.7)">
+              :element-loading-text="$t('modelConfig.loading')" element-loading-spinner="el-icon-loading"
+              element-loading-background="rgba(255, 255, 255, 0.7)">
               <el-table-column :label="$t('modelConfig.select')" align="center" width="120">
                 <template slot-scope="scope">
                   <el-checkbox v-model="scope.row.selected"></el-checkbox>
@@ -36,13 +36,13 @@
               <el-table-column :label="$t('modelConfig.action')" align="center" width="300px">
                 <template slot-scope="scope">
                   <el-button size="mini" type="text" @click="resetPassword(scope.row)">{{ $t('user.resetPassword')
-                  }}</el-button>
+                    }}</el-button>
                   <el-button size="mini" type="text" v-if="scope.row.status === 1"
                     @click="handleChangeStatus(scope.row, 0)">{{ $t('user.disableAccount') }}</el-button>
                   <el-button size="mini" type="text" v-if="scope.row.status === 0"
                     @click="handleChangeStatus(scope.row, 1)">{{ $t('user.enableAccount') }}</el-button>
                   <el-button size="mini" type="text" @click="deleteUser(scope.row)">{{ $t('user.deleteUser')
-                  }}</el-button>
+                    }}</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -54,19 +54,18 @@
                 </el-button>
                 <el-button size="mini" type="success" icon="el-icon-circle-check" @click="batchEnable">{{
                   $t('user.enable')
-                }}</el-button>
+                  }}</el-button>
                 <el-button size="mini" type="warning" @click="batchDisable"><i
                     class="el-icon-remove-outline rotated-icon"></i>{{
                       $t('user.disable') }}</el-button>
                 <el-button size="mini" type="danger" icon="el-icon-delete" @click="batchDelete">{{ $t('user.delete')
-                }}</el-button>
+                  }}</el-button>
               </div>
               <div class="custom-pagination">
                 <el-select v-model="pageSize" @change="handlePageSizeChange"
                   :class="['page-size-select', { 'page-size-select-en': isEnglish }]">
                   <el-option v-for="item in pageSizeOptions" :key="item"
-                    :label="$t('modelConfig.itemsPerPage', { items: item })"
-                    :value="item">
+                    :label="$t('modelConfig.itemsPerPage', { items: item })" :value="item">
                   </el-option>
                 </el-select>
 
@@ -82,7 +81,7 @@
                 </button> <button class="pagination-btn" :disabled="currentPage === pageCount" @click="goNext">
                   {{ $t('modelConfig.nextPage') }}
                 </button>
-                <span class="total-text">{{ $t('modelConfig.totalRecords', { count: total }) }}</span>
+                <span class="total-text">{{ $t('modelConfig.totalRecords', { total: total }) }}</span>
               </div>
             </div>
           </el-card>
@@ -347,7 +346,7 @@ export default {
         this.$message.warning(this.$t('user.selectUsersFirst'));
         return;
       }
-      
+
       const userIds = this.selection.map(item => item.userId);
       this.$confirm(this.$t('user.confirmDeleteSelected', { count: this.selection.length }), this.$t('common.warning'), {
         confirmButtonText: this.$t('common.confirm'),
@@ -380,10 +379,10 @@ export default {
         this.$message.warning(this.$t('user.selectUsersFirst'));
         return;
       }
-      
+
       const actionText = status === 1 ? this.$t('user.enable') : this.$t('user.disable');
       const userIds = this.selection.map(item => item.userId);
-      
+
       this.$confirm(this.$t('user.confirmStatusChange', { action: actionText, count: this.selection.length }), this.$t('common.warning'), {
         confirmButtonText: this.$t('common.confirm'),
         cancelButtonText: this.$t('common.cancel'),
