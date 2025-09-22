@@ -63,7 +63,7 @@
               </div>
               <div class="custom-pagination">
                 <el-select v-model="pageSize" @change="handlePageSizeChange"
-                  :class="['page-size-select', { 'page-size-select-en': isEnglish }]">
+                  :class="['page-size-select', { 'page-size-select-en': $i18n.locale === 'en' }]">
                   <el-option v-for="item in pageSizeOptions" :key="item"
                     :label="$t('modelConfig.itemsPerPage', { items: item })" :value="item">
                   </el-option>
@@ -125,9 +125,6 @@ export default {
     pageCount() {
       return Math.ceil(this.total / this.pageSize);
     },
-    isEnglish() {
-      return i18n.locale === 'en';
-    },
     visiblePages() {
       const pages = [];
       const maxVisible = 3;
@@ -142,7 +139,7 @@ export default {
         pages.push(i);
       }
       return pages;
-    },
+    }
   },
   methods: {
     handlePageSizeChange(val) {

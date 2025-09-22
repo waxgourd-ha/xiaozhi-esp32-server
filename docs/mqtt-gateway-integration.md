@@ -64,6 +64,7 @@ cp config/mqtt.json.example config/mqtt.json
 PUBLIC_IP=your-ip         # 服务器公网IP
 MQTT_PORT=1883            # MQTT服务器端口
 UDP_PORT=8884             # UDP服务器端口
+API_PORT=8007             # 管理API端口
 MQTT_SIGNATURE_KEY=test   # MQTT签名密钥
 ```
 请注意`PUBLIC_IP`配置，确保其与实际公网IP一致，如果有域名就填域名。
@@ -105,6 +106,10 @@ pm2 restart xz-mqtt
 3. 在智控台顶部，点击`参数管理`，搜索`server.udp_gateway`，点击编辑，填入你在`.env`文件中设置的`PUBLIC_IP`+`:`+`UDP_PORT`。类似这样
 ```
 192.168.0.7:8884
+```
+4. 在智控台顶部，点击`参数管理`，搜索`server.mqtt_manager_api`，点击编辑，填入你在`.env`文件中设置的`PUBLIC_IP`+`:`+`UDP_PORT`。类似这样
+```
+192.168.0.7:8007
 ```
 
 上面的配置完成后，你可以使用curl命令，验证你的ota地址是否会下发mqtt配置，把下面的`http://localhost:8002/xiaozhi/ota/`改成你的ota地址

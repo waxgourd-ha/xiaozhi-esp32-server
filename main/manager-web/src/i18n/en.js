@@ -7,6 +7,7 @@ export default {
   'login.loginSuccess': 'Login successful!',
   
   // HeaderBar组件文本
+  // 在header相关翻译中添加
   'header.smartManagement': 'Agents',
   'header.modelConfig': 'Models',
   'header.userManagement': 'Users',
@@ -14,6 +15,7 @@ export default {
   'header.paramDictionary': 'More',
   'header.paramManagement': 'Params Management',
   'header.dictManagement': 'Dict Management',
+  'header.agentTemplate': 'Default Role Templates', // 添加这一行
 
   // McpToolCallDialog component text
   'mcpToolCall.title': 'Tool Call',
@@ -619,6 +621,7 @@ export default {
   'common.deleteFailure': 'Delete Failed, Please Try Again',
   'common.deleteCancelled': 'Delete Cancelled',
   'common.warning': 'Warning',
+  'common.tip': 'Tip',
   'common.confirm': 'Confirm',
   'common.cancel': 'Cancel',
   'common.sensitive': 'Sensitive',
@@ -998,4 +1001,49 @@ export default {
   'providerDialog.selectFieldsToDelete': 'Please select fields to delete first',
   'providerDialog.confirmBatchDeleteFields': 'Are you sure to delete {count} selected fields?',
   'providerDialog.batchDeleteFieldsSuccess': 'Successfully deleted {count} fields',
-};
+
+  // agentTemplateManagement
+  'agentTemplateManagement.title': 'Default Role Management',
+  'agentTemplateManagement.templateName': 'Template Name',
+  'agentTemplateManagement.action': 'Action',
+  'agentTemplateManagement.createTemplate': 'Create Template',
+  'templateQuickConfig.newTemplate': 'New Template',
+  'agentTemplateManagement.editTemplate': 'Edit Template',
+  'agentTemplateManagement.deleteTemplate': 'Delete Template',
+  'agentTemplateManagement.deleteSuccess': 'Template deleted successfully',
+  'agentTemplateManagement.batchDelete': 'Batch Delete',
+  'agentTemplateManagement.batchDeleteSuccess': 'Batch deletion successful',
+  'agentTemplateManagement.selectTemplate': 'Please select a template',
+  'agentTemplateManagement.select': 'Select',
+  'agentTemplateManagement.searchPlaceholder': 'Please enter template name to search',
+  'agentTemplateManagement.search': 'Search',
+  'agentTemplateManagement.serialNumber': 'Serial Number',
+  'agentTemplateManagement.selectAll': 'Select All',
+  'agentTemplateManagement.deselectAll': 'Deselect All',
+  'agentTemplateManagement.loading': 'Loading...',
+  'agentTemplateManagement.confirmSingleDelete': 'Are you sure you want to delete this template?',
+  'agentTemplateManagement.confirmBatchDelete': 'Are you sure you want to delete the selected {count} templates?',
+  'agentTemplateManagement.deleteFailed': 'Template deletion failed',
+  'agentTemplateManagement.batchDeleteFailed': 'Template batch deletion failed',
+  'agentTemplateManagement.deleteBackendError': 'Deletion failed, please check if the backend service is normal',
+  'agentTemplateManagement.deleteCancelled': 'Deletion cancelled',
+  
+  // templateQuickConfig
+  'templateQuickConfig.title': 'Module Quick Configuration',
+  'templateQuickConfig.agentSettings.agentName': 'Nickname',
+  'templateQuickConfig.agentSettings.agentNamePlaceholder': 'Please enter nickname',
+  'templateQuickConfig.agentSettings.systemPrompt': 'Introduction',
+  'templateQuickConfig.agentSettings.systemPromptPlaceholder': 'Please enter ntroduction',
+  'templateQuickConfig.saveConfig': 'Save Configuration',
+  'templateQuickConfig.resetConfig': 'Reset Configuration',
+  'templateQuickConfig.configSaved': 'Configuration saved successfully',
+  'templateQuickConfig.configReset': 'Configuration has been reset',
+  'templateQuickConfig.confirmReset': 'Are you sure you want to reset the configuration?',
+  'templateQuickConfig.saveFailed': 'Configuration save failed',
+  'templateQuickConfig.confirm': 'Confirm',
+  'templateQuickConfig.cancel': 'Cancel',
+  'templateQuickConfig.templateNotFound': 'Template not found',
+  'warning': 'Warning',
+  'info': 'Info',
+  'common.networkError': 'Network request failed'
+}
