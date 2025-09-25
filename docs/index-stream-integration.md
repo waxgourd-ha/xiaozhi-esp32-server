@@ -34,7 +34,7 @@ Cuda compilation tools, release 12.8, V12.8.89
 ```bash
 pip install torch torchvision
 ```
-需要 pytorch 版本 2.8.0（对应 vllm 0.10.2），具体安装指令请参考：[pytorch 官网](https://pytorch.org/get-started/locally/]\)  
+需要 pytorch 版本 2.8.0（对应 vllm 0.10.2），具体安装指令请参考：[pytorch 官网](https://pytorch.org/get-started/locally/)  
 
 ### 4. 安装依赖
 ```bash 
