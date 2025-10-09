@@ -16,6 +16,34 @@
             :style="{ filter: $route.path === '/home' || $route.path === '/role-config' || $route.path === '/device-management' ? 'brightness(0) invert(1)' : 'None' }" />
           <span class="nav-text">{{ $t('header.smartManagement') }}</span>
         </div>
+        <!-- 普通用户显示音色克隆 -->
+        <div v-if="!isSuperAdmin" class="equipment-management"
+          :class="{ 'active-tab': $route.path === '/voice-clone-management' }" @click="goVoiceCloneManagement">
+          <img loading="lazy" alt="" src="@/assets/header/voice.png"
+            :style="{ filter: $route.path === '/voice-clone-management' ? 'brightness(0) invert(1)' : 'None' }" />
+          <span class="nav-text">{{ $t('header.voiceCloneManagement') }}</span>
+        </div>
+
+        <!-- 超级管理员显示音色克隆下拉菜单 -->
+        <el-dropdown v-if="isSuperAdmin" trigger="click" class="equipment-management more-dropdown"
+          :class="{ 'active-tab': $route.path === '/voice-clone-management' || $route.path === '/voice-resource-management' }"
+          @visible-change="handleVoiceCloneDropdownVisibleChange">
+          <span class="el-dropdown-link">
+            <img loading="lazy" alt="" src="@/assets/header/voice.png"
+              :style="{ filter: $route.path === '/voice-clone-management' || $route.path === '/voice-resource-management' ? 'brightness(0) invert(1)' : 'None' }" />
+            <span class="nav-text">{{ $t('header.voiceCloneManagement') }}</span>
+            <i class="el-icon-arrow-down el-icon--right" :class="{ 'rotate-down': voiceCloneDropdownVisible }"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item @click.native="goVoiceCloneManagement">
+              {{ $t('header.voiceCloneManagement') }}
+            </el-dropdown-item>
+            <el-dropdown-item @click.native="goVoiceResourceManagement">
+              {{ $t('header.voiceResourceManagement') }}
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+
         <div v-if="isSuperAdmin" class="equipment-management" :class="{ 'active-tab': $route.path === '/model-config' }"
           @click="goModelConfig">
           <img loading="lazy" alt="" src="@/assets/header/model_config.png"
@@ -28,22 +56,19 @@
             :style="{ filter: $route.path === '/user-management' ? 'brightness(0) invert(1)' : 'None' }" />
           <span class="nav-text">{{ $t('header.userManagement') }}</span>
         </div>
-        <div v-if="isSuperAdmin" class="equipment-management"
-          :class="{ 'active-tab': $route.path === '/ota-management' }" @click="goOtaManagement">
-          <img loading="lazy" alt="" src="@/assets/header/firmware_update.png"
-            :style="{ filter: $route.path === '/ota-management' ? 'brightness(0) invert(1)' : 'None' }" />
-          <span class="nav-text">{{ $t('header.otaManagement') }}</span>
-        </div>
         <el-dropdown v-if="isSuperAdmin" trigger="click" class="equipment-management more-dropdown"
-          :class="{ 'active-tab': $route.path === '/dict-management' || $route.path === '/params-management' || $route.path === '/provider-management' || $route.path === '/server-side-management' || $route.path === '/agent-template-management' }"
+          :class="{ 'active-tab': $route.path === '/dict-management' || $route.path === '/params-management' || $route.path === '/provider-management' || $route.path === '/server-side-management' || $route.path === '/agent-template-management' || $route.path === '/ota-management' }"
           @visible-change="handleParamDropdownVisibleChange">
           <span class="el-dropdown-link">
             <img loading="lazy" alt="" src="@/assets/header/param_management.png"
-              :style="{ filter: $route.path === '/dict-management' || $route.path === '/params-management' || $route.path === '/provider-management' || $route.path === '/server-side-management' || $route.path === '/agent-template-management' ? 'brightness(0) invert(1)' : 'None' }" />
+              :style="{ filter: $route.path === '/dict-management' || $route.path === '/params-management' || $route.path === '/provider-management' || $route.path === '/server-side-management' || $route.path === '/agent-template-management' || $route.path === '/ota-management' ? 'brightness(0) invert(1)' : 'None' }" />
             <span class="nav-text">{{ $t('header.paramDictionary') }}</span>
             <i class="el-icon-arrow-down el-icon--right" :class="{ 'rotate-down': paramDropdownVisible }"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item @click.native="goOtaManagement">
+              {{ $t('header.otaManagement') }}
+            </el-dropdown-item>
             <el-dropdown-item @click.native="goParamManagement">
               {{ $t('header.paramManagement') }}
             </el-dropdown-item>
@@ -66,43 +91,43 @@
       <!-- 右侧元素 -->
       <div class="header-right">
         <div class="search-container" v-if="$route.path === '/home' && !(isSuperAdmin && isSmallScreen)">
-          <el-input v-model="search" :placeholder="$t('header.searchPlaceholder')" class="custom-search-input"
-            @keyup.enter.native="handleSearch">
-            <i slot="suffix" class="el-icon-search search-icon" @click="handleSearch"></i>
-          </el-input>
+          <div class="search-wrapper">
+            <el-input v-model="search" :placeholder="$t('header.searchPlaceholder')" class="custom-search-input"
+              @keyup.enter.native="handleSearch" @focus="showSearchHistory" @blur="hideSearchHistory" clearable
+              ref="searchInput">
+              <i slot="suffix" class="el-icon-search search-icon" @click="handleSearch"></i>
+            </el-input>
+            <!-- 搜索历史下拉框 -->
+            <div v-if="showHistory && searchHistory.length > 0" class="search-history-dropdown">
+              <div class="search-history-header">
+                <span>{{ $t('header.searchHistory') }}</span>
+                <el-button type="text" size="small" class="clear-history-btn" @click="clearSearchHistory">
+                  {{ $t('header.clearHistory') }}
+                </el-button>
+              </div>
+              <div class="search-history-list">
+                <div v-for="(item, index) in searchHistory" :key="index" class="search-history-item"
+                  @click.stop="selectSearchHistory(item)">
+                  <span class="history-text">{{ item }}</span>
+                  <i class="el-icon-close clear-item-icon" @click.stop="removeSearchHistory(index)"></i>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- 语言切换下拉菜单 -->
-        <el-dropdown trigger="click" class="language-dropdown" @visible-change="handleLanguageDropdownVisibleChange">
-          <span class="el-dropdown-link">
-            <span class="current-language-text">{{ currentLanguageText }}</span>
-            <i class="el-icon-arrow-down el-icon--right" :class="{ 'rotate-down': languageDropdownVisible }"></i>
-          </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item @click.native="changeLanguage('zh_CN')">
-              {{ $t('language.zhCN') }}
-            </el-dropdown-item>
-            <el-dropdown-item @click.native="changeLanguage('zh_TW')">
-              {{ $t('language.zhTW') }}
-            </el-dropdown-item>
-            <el-dropdown-item @click.native="changeLanguage('en')">
-              {{ $t('language.en') }}
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-
-        <img loading="lazy" alt="" src="@/assets/home/avatar.png" class="avatar-img" />
-        <el-dropdown trigger="click" class="user-dropdown" @visible-change="handleUserDropdownVisibleChange">
-          <span class="el-dropdown-link">
-            {{ userInfo.username || '加载中...' }}
-            <i class="el-icon-arrow-down el-icon--right" :class="{ 'rotate-down': userDropdownVisible }"></i>
-          </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item @click.native="showChangePasswordDialog">{{ $t('header.changePassword')
-              }}</el-dropdown-item>
-            <el-dropdown-item @click.native="handleLogout">{{ $t('header.logout') }}</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
+        <img loading="lazy" alt="" src="@/assets/home/avatar.png" class="avatar-img" @click="handleAvatarClick" />
+        <span class="el-dropdown-link" @click="handleAvatarClick">
+          {{ userInfo.username || '加载中...' }}
+          <i class="el-icon-arrow-down el-icon--right"></i>
+        </span>
+        <el-cascader :options="userMenuOptions" trigger="click" :props="cascaderProps"
+          style="width: 0px;overflow: hidden;" :show-all-levels="false" @change="handleCascaderChange"
+          ref="userCascader">
+          <template slot-scope="{ data }">
+            <span>{{ data.label }}</span>
+          </template>
+        </el-cascader>
       </div>
     </div>
 
@@ -131,10 +156,21 @@ export default {
         mobile: ''
       },
       isChangePasswordDialogVisible: false, // 控制修改密码弹窗的显示
-      userDropdownVisible: false,
       paramDropdownVisible: false,
-      languageDropdownVisible: false,
-      isSmallScreen: false
+      voiceCloneDropdownVisible: false,
+      isSmallScreen: false,
+      // 搜索历史相关
+      searchHistory: [],
+      showHistory: false,
+      SEARCH_HISTORY_KEY: 'xiaozhi_search_history',
+      MAX_HISTORY_COUNT: 3,
+      // Cascader 配置
+      cascaderProps: {
+        expandTrigger: 'click',
+        value: 'value',
+        label: 'label',
+        children: 'children'
+      }
     }
   },
   computed: {
@@ -159,12 +195,45 @@ export default {
         default:
           return this.$t('language.zhCN');
       }
+    },
+    // 用户菜单选项
+    userMenuOptions() {
+      return [
+        {
+          label: this.currentLanguageText,
+          value: 'language',
+          children: [
+            {
+              label: this.$t('language.zhCN'),
+              value: 'zh_CN'
+            },
+            {
+              label: this.$t('language.zhTW'),
+              value: 'zh_TW'
+            },
+            {
+              label: this.$t('language.en'),
+              value: 'en'
+            }
+          ]
+        },
+        {
+          label: this.$t('header.changePassword'),
+          value: 'changePassword'
+        },
+        {
+          label: this.$t('header.logout'),
+          value: 'logout'
+        }
+      ];
     }
   },
   mounted() {
     this.fetchUserInfo();
     this.checkScreenSize();
     window.addEventListener('resize', this.checkScreenSize);
+    // 从localStorage加载搜索历史
+    this.loadSearchHistory();
   },
   //移除事件监听器
   beforeDestroy() {
@@ -181,6 +250,9 @@ export default {
     goModelConfig() {
       this.$router.push('/model-config')
     },
+    goVoiceCloneManagement() {
+      this.$router.push('/voice-clone-management')
+    },
     goParamManagement() {
       this.$router.push('/params-management')
     },
@@ -195,6 +267,11 @@ export default {
     },
     goServerSideManagement() {
       this.$router.push('/server-side-management')
+    },
+
+    // 跳转到音色资源管理
+    goVoiceResourceManagement() {
+      this.$router.push('/voice-resource-management')
     },
     // 添加默认角色模板管理导航方法
     goAgentTemplateManagement() {
@@ -222,6 +299,9 @@ export default {
         return;
       }
 
+      // 保存搜索历史
+      this.saveSearchHistory(searchValue);
+
       try {
         // 创建不区分大小写的正则表达式
         const regex = new RegExp(searchValue, 'i');
@@ -233,6 +313,85 @@ export default {
           message: this.$t('message.error'),
           showClose: true
         });
+      }
+
+      // 搜索完成后让输入框失去焦点，从而触发blur事件隐藏搜索历史
+      if (this.$refs.searchInput) {
+        this.$refs.searchInput.blur();
+      }
+    },
+
+    // 显示搜索历史
+    showSearchHistory() {
+      this.showHistory = true;
+    },
+
+    // 隐藏搜索历史
+    hideSearchHistory() {
+      // 延迟隐藏，以便点击事件能够执行
+      setTimeout(() => {
+        this.showHistory = false;
+      }, 200);
+    },
+
+    // 加载搜索历史
+    loadSearchHistory() {
+      try {
+        const history = localStorage.getItem(this.SEARCH_HISTORY_KEY);
+        if (history) {
+          this.searchHistory = JSON.parse(history);
+        }
+      } catch (error) {
+        console.error('加载搜索历史失败:', error);
+        this.searchHistory = [];
+      }
+    },
+
+    // 保存搜索历史
+    saveSearchHistory(keyword) {
+      if (!keyword || this.searchHistory.includes(keyword)) {
+        return;
+      }
+
+      // 添加到历史记录开头
+      this.searchHistory.unshift(keyword);
+
+      // 限制历史记录数量
+      if (this.searchHistory.length > this.MAX_HISTORY_COUNT) {
+        this.searchHistory = this.searchHistory.slice(0, this.MAX_HISTORY_COUNT);
+      }
+
+      // 保存到localStorage
+      try {
+        localStorage.setItem(this.SEARCH_HISTORY_KEY, JSON.stringify(this.searchHistory));
+      } catch (error) {
+        console.error('保存搜索历史失败:', error);
+      }
+    },
+
+    // 选择搜索历史项
+    selectSearchHistory(keyword) {
+      this.search = keyword;
+      this.handleSearch();
+    },
+
+    // 移除单个搜索历史项
+    removeSearchHistory(index) {
+      this.searchHistory.splice(index, 1);
+      try {
+        localStorage.setItem(this.SEARCH_HISTORY_KEY, JSON.stringify(this.searchHistory));
+      } catch (error) {
+        console.error('更新搜索历史失败:', error);
+      }
+    },
+
+    // 清空所有搜索历史
+    clearSearchHistory() {
+      this.searchHistory = [];
+      try {
+        localStorage.removeItem(this.SEARCH_HISTORY_KEY);
+      } catch (error) {
+        console.error('清空搜索历史失败:', error);
       }
     },
     // 显示修改密码弹窗
@@ -256,25 +415,53 @@ export default {
         });
       }
     },
-    handleUserDropdownVisibleChange(visible) {
-      this.userDropdownVisible = visible;
-    },
-    // 监听第二个下拉菜单的可见状态变化
+    // 监听参数字典下拉菜单的可见状态变化
     handleParamDropdownVisibleChange(visible) {
       this.paramDropdownVisible = visible;
     },
-    // 监听语言下拉菜单的可见状态变化
-    handleLanguageDropdownVisibleChange(visible) {
-      this.languageDropdownVisible = visible;
+
+    // 监听音色克隆下拉菜单的可见状态变化
+    handleVoiceCloneDropdownVisibleChange(visible) {
+      this.voiceCloneDropdownVisible = visible;
+    },
+    // 处理 Cascader 选择变化
+    handleCascaderChange(value) {
+      if (!value || value.length === 0) {
+        return;
+      }
+
+      const action = value[value.length - 1];
+
+      // 处理语言切换
+      if (value.length === 2 && value[0] === 'language') {
+        this.changeLanguage(action);
+        return;
+      }
+
+      // 处理其他操作
+      switch (action) {
+        case 'changePassword':
+          this.showChangePasswordDialog();
+          break;
+        case 'logout':
+          this.handleLogout();
+          break;
+      }
     },
     // 切换语言
     changeLanguage(lang) {
       changeLanguage(lang);
-      this.languageDropdownVisible = false;
       this.$message.success({
         message: this.$t('message.success'),
         showClose: true
       });
+    },
+
+    // 点击头像触发cascader下拉菜单
+    handleAvatarClick() {
+      if (this.$refs.userCascader) {
+        this.$refs.userCascader.toggleDropDownVisible();
+      }
     },
 
     // 使用 mapActions 引入 Vuex 的 logout action
@@ -322,7 +509,7 @@ export default {
   align-items: center;
   gap: 25px;
   position: absolute;
-  left: 44%;
+  left: 50%;
   transform: translateX(-50%);
 }
 
@@ -371,6 +558,84 @@ export default {
   max-width: none;
 }
 
+.search-wrapper {
+  position: relative;
+}
+
+.search-history-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e4e6ef;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  margin-top: 2px;
+}
+
+.search-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 12px;
+  color: #909399;
+}
+
+.clear-history-btn {
+  color: #909399;
+  font-size: 11px;
+  padding: 0;
+  height: auto;
+}
+
+.clear-history-btn:hover {
+  color: #606266;
+}
+
+.search-history-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.search-history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #606266;
+}
+
+.search-history-item:hover {
+  background-color: #f5f7fa;
+}
+
+.clear-item-icon {
+  font-size: 10px;
+  color: #909399;
+  visibility: hidden;
+}
+
+.more-dropdown .el-dropdown-link {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+
+.search-history-item:hover .clear-item-icon {
+  visibility: visible;
+}
+
+.clear-item-icon:hover {
+  color: #ff4949;
+}
+
 .custom-search-input>>>.el-input__inner {
   height: 18px;
   border-radius: 9px;
@@ -400,41 +665,7 @@ export default {
   width: 21px;
   height: 21px;
   flex-shrink: 0;
-}
-
-.user-dropdown {
-  flex-shrink: 0;
-}
-
-.language-dropdown {
-  flex-shrink: 0;
-  margin-right: 5px;
-}
-
-.current-language-text {
-  margin-left: 4px;
-  margin-right: 4px;
-  font-size: 12px;
-  color: #3d4566;
-}
-
-.more-dropdown {
-  padding-right: 20px;
-}
-
-.more-dropdown .el-dropdown-link {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-
-.rotate-down {
-  transform: rotate(180deg);
-  transition: transform 0.3s ease;
-}
-
-.el-icon-arrow-down {
-  transition: transform 0.3s ease;
+  cursor: pointer;
 }
 
 /* 导航文本样式 - 支持中英文换行 */

@@ -5,16 +5,20 @@ export default {
   'login.requiredCaptcha': 'Captcha cannot be empty',
   'login.requiredMobile': 'Please enter a valid mobile phone number',
   'login.loginSuccess': 'Login successful!',
-  
+
   // HeaderBar组件文本
   'header.smartManagement': 'Agents',
   'header.modelConfig': 'Models',
+  'header.voiceCloneManagement': 'Voice Clone',
+  'header.voiceResourceManagement': 'Voice Resource',
   'header.userManagement': 'Users',
-  'header.otaManagement': 'OTA',
+  'header.otaManagement': 'OTA Management',
   'header.paramDictionary': 'More',
   'header.paramManagement': 'Params Management',
   'header.dictManagement': 'Dict Management',
   'header.agentTemplate': 'Default Role Templates', // 添加这一行
+  'header.searchHistory': 'Search History',
+  'header.clearHistory': 'Clear History',
 
   // McpToolCallDialog component text
   'mcpToolCall.title': 'Tool Call',
@@ -38,7 +42,7 @@ export default {
   'mcpToolCall.copyResult': 'Copy Result',
   'mcpToolCall.noResultYet': 'No result yet',
   'mcpToolCall.loadingToolList': 'Loading tool list...',
-  
+
   // Tool names
   'mcpToolCall.toolName.getDeviceStatus': 'View Device Status',
   'mcpToolCall.toolName.setVolume': 'Set Volume',
@@ -52,7 +56,7 @@ export default {
   'mcpToolCall.toolName.snapshot': 'Screen Snapshot',
   'mcpToolCall.toolName.previewImage': 'Preview Image',
   'mcpToolCall.toolName.setDownloadUrl': 'Set Download URL',
-  
+
   // Tool categories
   'mcpToolCall.category.audio': 'Audio',
   'mcpToolCall.category.display': 'Display',
@@ -60,7 +64,7 @@ export default {
   'mcpToolCall.category.system': 'System',
   'mcpToolCall.category.assets': 'Assets',
   'mcpToolCall.category.deviceInfo': 'Device Info',
-  
+
   // Table categories and properties
   'mcpToolCall.table.audioSpeaker': 'Audio Speaker',
   'mcpToolCall.table.screen': 'Screen',
@@ -80,7 +84,7 @@ export default {
   'mcpToolCall.table.component': 'Component',
   'mcpToolCall.table.property': 'Property',
   'mcpToolCall.table.value': 'Value',
-  
+
   'mcpToolCall.prop.volume': 'Volume',
   'mcpToolCall.prop.brightness': 'Brightness',
   'mcpToolCall.prop.theme': 'Theme',
@@ -112,7 +116,7 @@ export default {
   'mcpToolCall.prop.url': 'URL',
   'mcpToolCall.prop.quality': 'Quality',
   'mcpToolCall.prop.question': 'Question',
-  
+
   // Tool help texts
   'mcpToolCall.help.getDeviceStatus': 'View the current running status of the device, including volume, screen, battery and other information.',
   'mcpToolCall.help.setVolume': 'Adjust the volume of the device, please enter a value between 0-100.',
@@ -126,7 +130,7 @@ export default {
   'mcpToolCall.help.snapshot': 'Take a screenshot of the current screen and upload it to the specified URL.',
   'mcpToolCall.help.previewImage': 'Preview images from the specified URL on the device screen.',
   'mcpToolCall.help.setDownloadUrl': 'Set the download address for device resource files.',
-  
+
   // Other text
   'mcpToolCall.text.strong': 'Strong',
   'mcpToolCall.text.medium': 'Medium',
@@ -231,7 +235,7 @@ export default {
 
   // AddModelDialog component related
   'addModelDialog.requiredSupplier': 'Please select a supplier',
-  
+
   // Register page related
   'register.title': 'Create Account',
   'register.welcome': 'Welcome to XiaoZhi AI',
@@ -384,10 +388,12 @@ export default {
   'register.registerSuccess': 'Registration successful!',
   'register.registerFailed': 'Registration failed',
   'register.passwordsNotMatch': 'The two passwords do not match',
+  'register.secondsLater': 'seconds later',
 
   // Retrieve password page text
   'retrievePassword.title': 'Reset Password',
   'retrievePassword.welcome': 'PASSWORD RETRIEVE',
+  'retrievePassword.subtitle': 'Retrieve Password',
   'retrievePassword.mobile': 'Mobile',
   'retrievePassword.mobilePlaceholder': 'Please enter mobile number',
   'retrievePassword.captcha': 'Verification Code',
@@ -399,6 +405,7 @@ export default {
   'retrievePassword.confirmNewPassword': 'Confirm New Password',
   'retrievePassword.confirmNewPasswordPlaceholder': 'Please confirm new password',
   'retrievePassword.getMobileCaptcha': 'Get Verification Code',
+  'retrievePassword.resetButton': 'Reset Password',
   'retrievePassword.updateButton': 'Update Now',
   'retrievePassword.goToLogin': 'Back to Login',
   'retrievePassword.inputCorrectMobile': 'Please enter correct mobile number',
@@ -411,6 +418,7 @@ export default {
   'retrievePassword.newPasswordRequired': 'New password cannot be empty',
   'retrievePassword.confirmNewPasswordRequired': 'Confirm new password cannot be empty',
   'retrievePassword.passwordUpdateSuccess': 'Password updated successfully',
+  'retrievePassword.agreeTo': 'Reset means agree',
 
   // Change password page text
   'changePassword.title': 'Change Password',
@@ -496,6 +504,9 @@ export default {
   'chatHistory.selectSession': 'Please select a session to view chat history',
   'chatHistory.today': 'Today',
   'chatHistory.yesterday': 'Yesterday',
+  'chatHistory.downloadCurrentSession': 'Download current session chat history',
+  'chatHistory.downloadCurrentWithPreviousSessions': 'Download current and previous 20 sessions chat history',
+  'chatHistory.downloadLinkFailed': 'Failed to get download link',
   'cache.status': 'Cache Status',
   'cache.cdnEnabled': 'CDN Mode Enabled',
   'cache.cdnDisabled': 'CDN Mode Disabled',
@@ -631,7 +642,7 @@ export default {
   'providerManagement.selectToDelete': 'Please select providers to delete first',
   'providerManagement.confirmDelete': 'Are you sure to delete the selected {count} providers?',
   'providerManagement.viewFields': 'View Fields',
- 
+
   // Common Text
   'common.all': 'All',
   'common.search': 'Search',
@@ -661,7 +672,7 @@ export default {
   'common.confirm': 'Confirm',
   'common.cancel': 'Cancel',
   'common.sensitive': 'Sensitive',
-  
+
   // Language switch
   'language.zhCN': '中文简体',
   'language.zhTW': '中文繁體',
@@ -1029,7 +1040,7 @@ export default {
   'agentTemplateManagement.batchDeleteFailed': 'Template batch deletion failed',
   'agentTemplateManagement.deleteBackendError': 'Deletion failed, please check if the backend service is normal',
   'agentTemplateManagement.deleteCancelled': 'Deletion cancelled',
-  
+
   // templateQuickConfig
   'templateQuickConfig.title': 'Module Quick Configuration',
   'templateQuickConfig.agentSettings.agentName': 'Nickname',
@@ -1047,5 +1058,92 @@ export default {
   'templateQuickConfig.templateNotFound': 'Template not found',
   'warning': 'Warning',
   'info': 'Info',
-  'common.networkError': 'Network request failed'
+  'common.networkError': 'Network request failed',
+  'sm2.publicKeyNotConfigured': 'SM2 public key not configured, please contact administrator',
+  'sm2.encryptionFailed': 'Password encryption failed',
+  'sm2.keyGenerationFailed': 'Key pair generation failed',
+  'sm2.invalidPublicKey': 'Invalid public key format',
+  'sm2.encryptionError': 'Error occurred during encryption',
+  'sm2.publicKeyRetry': 'Retrying to get public key...',
+  'sm2.publicKeyRetryFailed': 'Public key retrieval retry failed',
+
+  // 音色资源管理
+  'voiceClone.title': 'Voice Clone',
+  'voiceResource.title': 'Voice Resource',
+  'voiceClone.platformName': 'Platform Name',
+  'voiceClone.voiceId': 'Voice ID',
+  'voiceClone.userId': 'Account Owner',
+  'voiceClone.name': 'Voice Name',
+  'voiceClone.clone': 'Clone Voice',
+  'voiceClone.action': 'Action',
+  'voiceClone.modelId': 'Model ID',
+  'voiceClone.trainStatus': 'Training Status',
+  'voiceClone.trainError': 'Training Error',
+  'voiceClone.createdAt': 'Creation Time',
+  'voiceClone.search': 'Search',
+  'voiceClone.searchPlaceholder': 'Please enter voice name or voice ID',
+  'voiceClone.addNew': 'Add',
+  'voiceClone.delete': 'Delete',
+  'voiceClone.selectAll': 'Select All',
+  'voiceClone.deselectAll': 'Deselect All',
+  'voiceClone.addVoiceClone': 'Add Voice Resource',
+  'voiceClone.confirmDelete': 'Are you sure you want to delete the selected {count} voice resources?',
+  'voiceClone.deleteSuccess': 'Successfully deleted {count} voice resources',
+  'voiceClone.deleteFailed': 'Deletion failed',
+  'voiceClone.addSuccess': 'Add successful',
+  'voiceClone.addFailed': 'Add failed',
+  'voiceClone.updateSuccess': 'Update successful',
+  'voiceClone.updateFailed': 'Update failed',
+  'voiceClone.selectFirst': 'Please select voice resources to delete first',
+  'voiceClone.operationCancelled': 'Cancel',
+  'voiceClone.operationClosed': 'Popup closed',
+  'voiceClone.cloneSuccess': 'Clone successful',
+  'voiceClone.cloneFailed': 'Clone failed',
+  'voiceClone.confirmClone': 'Are you sure you want to clone this voice?',
+  'voiceClone.onlySuccessCanClone': 'Only successfully trained voices can be cloned',
+  'common.insufficient': 'Insufficient',
+  'voiceClone.platformNameRequired': 'Please select platform name',
+  'voiceClone.voiceIdRequired': 'Please select voice ID',
+  'voiceClone.userIdRequired': 'Please select account owner',
+  'voiceClone.platformNamePlaceholder': 'Please select platform name',
+  'voiceClone.voiceIdPlaceholder': 'Please enter voice ID and press Enter',
+  'voiceClone.userIdPlaceholder': 'Please enter keyword to select account owner',
+  'voiceClone.waitingUpload': 'Waiting for upload',
+  'voiceClone.waitingTraining': 'Waiting for clone',
+  'voiceClone.training': 'Training',
+  'voiceClone.trainSuccess': 'Training successful',
+  'voiceClone.trainFailed': 'Training failed',
+  'voiceClone.itemsPerPage': '{items} items per page',
+  'voiceClone.firstPage': 'First Page',
+  'voiceClone.prevPage': 'Previous Page',
+  'voiceClone.nextPage': 'Next Page',
+  'voiceClone.totalRecords': '{total} records in total',
+  'voiceClone.noVoiceCloneAssigned': 'Your account has no voice resources assigned',
+  'voiceClone.contactAdmin': 'Please contact administrator for voice resource assignment',
+  'voiceClone.dialogTitle': 'Voice Clone',
+  'voiceClone.stepUpload': 'Prepare Audio',
+  'voiceClone.stepEdit': 'Audio Edit',
+  'voiceClone.dragOrClick': 'Drag audio file here, or click to upload',
+  'voiceClone.uploadTip': 'Support all mainstream audio formats, selected duration must be between 8-60 seconds',
+  'voiceClone.editTip1': 'Please confirm if the uploaded audio is satisfactory',
+  'voiceClone.editTip2': 'You can listen and trim the audio, if not satisfied you can go back to re-record or upload',
+  'voiceClone.selectedDuration': 'Selected valid segment: {duration} seconds',
+  'voiceClone.trim': 'Trim selected segment',
+  'voiceClone.reset': 'Reset',
+  'voiceClone.play': 'Play',
+  'voiceClone.pause': 'Pause',
+  'voiceClone.cancel': 'Cancel',
+  'voiceClone.nextStep': 'Next',
+  'voiceClone.prevStep': 'Previous',
+  'voiceClone.upload': 'Upload Audio',
+  'voiceClone.pleaseSelectAudio': 'Please select an audio file first',
+  'voiceClone.durationError': 'Audio duration must be between 8-60 seconds',
+  'voiceClone.loadAudioFailed': 'Failed to load audio',
+  'voiceClone.trimSuccess': 'Trim successful',
+  'voiceClone.resetSuccess': 'Reset successful',
+  'voiceClone.uploadSuccess': 'Upload successful',
+  'voiceClone.uploadFailed': 'Upload failed',
+  'voiceClone.updateNameSuccess': 'Name updated successfully',
+  'voiceClone.updateNameFailed': 'Failed to update name',
+  'voiceClone.playFailed': 'Play failed',
 }

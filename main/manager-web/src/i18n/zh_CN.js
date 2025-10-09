@@ -5,9 +5,11 @@ export default {
   'login.requiredCaptcha': '验证码不能为空',
   'login.requiredMobile': '请输入正确的手机号码',
   'login.loginSuccess': '登录成功！',
-  
+
   // HeaderBar组件文本
   'header.smartManagement': '智能体管理',
+  'header.voiceCloneManagement': '音色克隆',
+  'header.voiceResourceManagement': '音色资源',
   'header.modelConfig': '模型配置',
   'header.userManagement': '用户管理',
   'header.otaManagement': 'OTA管理',
@@ -15,6 +17,8 @@ export default {
   'header.paramManagement': '参数管理',
   'header.dictManagement': '字典管理',
   'header.agentTemplate': '默认角色模板',
+  'header.searchHistory': '搜索历史',
+  'header.clearHistory': '清空历史',
 
   // McpToolCallDialog组件文本
   'mcpToolCall.title': '工具调用',
@@ -38,7 +42,7 @@ export default {
   'mcpToolCall.copyResult': '复制结果',
   'mcpToolCall.noResultYet': '暂无执行结果',
   'mcpToolCall.loadingToolList': '正在获取工具列表...',
-  
+
   // 工具名称
   'mcpToolCall.toolName.getDeviceStatus': '查看设备状态',
   'mcpToolCall.toolName.setVolume': '设置音量',
@@ -52,7 +56,7 @@ export default {
   'mcpToolCall.toolName.snapshot': '屏幕截图',
   'mcpToolCall.toolName.previewImage': '预览图片',
   'mcpToolCall.toolName.setDownloadUrl': '设置下载地址',
-  
+
   // 工具分类
   'mcpToolCall.category.audio': '音频',
   'mcpToolCall.category.display': '显示',
@@ -60,7 +64,7 @@ export default {
   'mcpToolCall.category.system': '系统',
   'mcpToolCall.category.assets': '资源',
   'mcpToolCall.category.deviceInfo': '设备信息',
-  
+
   // 表格分类和属性
   'mcpToolCall.table.audioSpeaker': '音频扬声器',
   'mcpToolCall.table.screen': '屏幕',
@@ -80,7 +84,7 @@ export default {
   'mcpToolCall.table.component': '组件',
   'mcpToolCall.table.property': '属性',
   'mcpToolCall.table.value': '值',
-  
+
   'mcpToolCall.prop.volume': '音量',
   'mcpToolCall.prop.brightness': '亮度',
   'mcpToolCall.prop.theme': '主题',
@@ -112,7 +116,7 @@ export default {
   'mcpToolCall.prop.url': 'URL',
   'mcpToolCall.prop.quality': '质量',
   'mcpToolCall.prop.question': '问题',
-  
+
   // 工具帮助文本
   'mcpToolCall.help.getDeviceStatus': '查看设备的当前运行状态，包括音量、屏幕、电池等信息。',
   'mcpToolCall.help.setVolume': '调整设备的音量大小，请输入0-100之间的数值。',
@@ -126,7 +130,7 @@ export default {
   'mcpToolCall.help.snapshot': '对当前屏幕进行截图并上传到指定URL。',
   'mcpToolCall.help.previewImage': '在设备屏幕上预览指定URL的图片。',
   'mcpToolCall.help.setDownloadUrl': '设置设备资源文件的下载地址。',
-  
+
   // 其他文本
   'mcpToolCall.text.strong': '强',
   'mcpToolCall.text.medium': '中',
@@ -231,7 +235,7 @@ export default {
 
   // AddModelDialog组件相关
   'addModelDialog.requiredSupplier': '请选择供应器',
-  
+
   // 注册页面相关
   'register.title': '创建账号',
   'register.welcome': '欢迎使用小智AI',
@@ -259,7 +263,7 @@ export default {
   'register.requiredPassword': '密码不能为空',
   'register.requiredCaptcha': '验证码不能为空',
   'register.requiredMobileCaptcha': '请输入短信验证码',
-  
+
   'manualAddDeviceDialog.deviceType': '设备型号',
   'manualAddDeviceDialog.deviceTypePlaceholder': '请选择设备型号',
   'manualAddDeviceDialog.firmwareVersion': '固件版本',
@@ -384,10 +388,12 @@ export default {
   'register.registerSuccess': '注册成功！',
   'register.registerFailed': '注册失败',
   'register.passwordsNotMatch': '两次输入的密码不一致',
+  'register.secondsLater': '秒后',
 
   // 忘记密码页面文本
   'retrievePassword.title': '重置密码',
   'retrievePassword.welcome': '密码找回',
+  'retrievePassword.subtitle': '找回密码',
   'retrievePassword.mobile': '手机号',
   'retrievePassword.mobilePlaceholder': '请输入手机号码',
   'retrievePassword.captcha': '验证码',
@@ -399,6 +405,7 @@ export default {
   'retrievePassword.confirmNewPassword': '确认新密码',
   'retrievePassword.confirmNewPasswordPlaceholder': '请确认新密码',
   'retrievePassword.getMobileCaptcha': '获取验证码',
+  'retrievePassword.resetButton': '重置密码',
   'retrievePassword.updateButton': '立即修改',
   'retrievePassword.goToLogin': '返回登录',
   'retrievePassword.inputCorrectMobile': '请输入正确的手机号码',
@@ -411,6 +418,7 @@ export default {
   'retrievePassword.newPasswordRequired': '新密码不能为空',
   'retrievePassword.confirmNewPasswordRequired': '确认新密码不能为空',
   'retrievePassword.passwordUpdateSuccess': '密码修改成功',
+  'retrievePassword.agreeTo': '重置即同意',
 
   // 修改密码页面文本
   'changePassword.title': '修改密码',
@@ -496,6 +504,9 @@ export default {
   'chatHistory.selectSession': '请选择会话查看聊天记录',
   'chatHistory.today': '今天',
   'chatHistory.yesterday': '昨天',
+  'chatHistory.downloadCurrentSession': '下载本会话聊天记录',
+  'chatHistory.downloadCurrentWithPreviousSessions': '下载本会话及前20条会话聊天记录',
+  'chatHistory.downloadLinkFailed': '获取下载链接失败',
   'cache.status': '缓存状态',
   'cache.cdnEnabled': 'CDN模式已启用',
   'cache.cdnDisabled': 'CDN模式已禁用',
@@ -631,7 +642,7 @@ export default {
   'providerManagement.selectToDelete': '请先选择需要删除的供应器',
   'providerManagement.confirmDelete': '确定要删除选中的{count}个供应器吗？',
   'providerManagement.viewFields': '查看字段',
-  
+
   // 公共文本
   'common.all': '全部',
   'common.search': '搜索',
@@ -1029,7 +1040,7 @@ export default {
   'agentTemplateManagement.deleteFailed': '模板删除失败',
   'agentTemplateManagement.batchDeleteFailed': '模板批量删除失败',
   'agentTemplateManagement.deleteBackendError': '删除失败，请检查后端服务是否正常',
-  
+
   // 模板快速配置页面文本
   'templateQuickConfig.title': '模块快速配置',
   'templateQuickConfig.agentSettings.agentName': '助手昵称',
@@ -1047,5 +1058,93 @@ export default {
   'templateQuickConfig.resetSuccess': '重置成功',
   'warning': '警告',
   'info': '提示',
-  'common.networkError': '网络请求失败'
+  'common.networkError': '网络请求失败',
+  // SM2加密相关错误消息
+  'sm2.publicKeyNotConfigured': 'SM2公钥未配置，请联系管理员',
+  'sm2.encryptionFailed': '密码加密失败',
+  'sm2.keyGenerationFailed': '密钥对生成失败',
+  'sm2.invalidPublicKey': '无效的公钥格式',
+  'sm2.encryptionError': '加密过程中发生错误',
+  'sm2.publicKeyRetry': '正在重试获取公钥...',
+  'sm2.publicKeyRetryFailed': '公钥获取重试失败',
+
+  // 音色资源管理
+  'voiceClone.title': '音色克隆',
+  'voiceResource.title': '音色资源',
+  'voiceClone.platformName': '平台名称',
+  'voiceClone.voiceId': '声音ID',
+  'voiceClone.userId': '归属账号',
+  'voiceClone.name': '声音名称',
+  'voiceClone.clone': '立即复刻',
+  'voiceClone.modelId': '模型ID',
+  'voiceClone.trainStatus': '训练状态',
+  'voiceClone.trainError': '训练错误',
+  'voiceClone.createdAt': '创建时间',
+  'voiceClone.search': '搜索',
+  'voiceClone.searchPlaceholder': '请输入声音名称或音色ID',
+  'voiceClone.addNew': '新增',
+  'voiceClone.delete': '删除',
+  'voiceClone.selectAll': '全选',
+  'voiceClone.deselectAll': '取消全选',
+  'voiceClone.addVoiceClone': '新增音色资源',
+  'voiceClone.confirmDelete': '确定要删除选中的 {count} 条音色资源吗？',
+  'voiceClone.deleteSuccess': '成功删除 {count} 条音色资源',
+  'voiceClone.deleteFailed': '删除失败',
+  'voiceClone.addSuccess': '添加成功',
+  'voiceClone.addFailed': '添加失败',
+  'voiceClone.updateSuccess': '更新成功',
+  'voiceClone.updateFailed': '更新失败',
+  'voiceClone.selectFirst': '请先选择要删除的音色资源',
+  'voiceClone.operationCancelled': '取消',
+  'voiceClone.operationClosed': '已关闭弹窗',
+  'voiceClone.action': '操作',
+  'voiceClone.cloneSuccess': '复刻成功',
+  'voiceClone.cloneFailed': '复刻失败',
+  'voiceClone.confirmClone': '确定要复刻此音色吗？',
+  'voiceClone.onlySuccessCanClone': '只有训练成功的音色才能复刻',
+  'common.insufficient': '不足',
+  'voiceClone.platformNameRequired': '请选择平台名称',
+  'voiceClone.voiceIdRequired': '请选择音色ID',
+  'voiceClone.userIdRequired': '请选择归属账号',
+  'voiceClone.platformNamePlaceholder': '请选择平台名称',
+  'voiceClone.voiceIdPlaceholder': '请输入音色ID并按回车',
+  'voiceClone.userIdPlaceholder': '请输入关键词选择归属账号',
+  'voiceClone.waitingUpload': '待上传',
+  'voiceClone.waitingTraining': '待复刻',
+  'voiceClone.training': '训练中',
+  'voiceClone.trainSuccess': '训练成功',
+  'voiceClone.trainFailed': '训练失败',
+  'voiceClone.itemsPerPage': '每页 {items} 条',
+  'voiceClone.firstPage': '首页',
+  'voiceClone.prevPage': '上一页',
+  'voiceClone.nextPage': '下一页',
+  'voiceClone.totalRecords': '共 {total} 条',
+  'voiceClone.noVoiceCloneAssigned': '您的账号暂无音色资源',
+  'voiceClone.contactAdmin': '请联系管理员分配音色资源',
+  'voiceClone.dialogTitle': '声音复刻',
+  'voiceClone.stepUpload': '准备音频',
+  'voiceClone.stepEdit': '音频编辑',
+  'voiceClone.dragOrClick': '将音频文件拖到此处，或点击上传',
+  'voiceClone.uploadTip': '支持所有主流音频格式，选区时长需要在8-60秒之间',
+  'voiceClone.editTip1': '请确认上传音频是否满意',
+  'voiceClone.editTip2': '您可以试听并裁剪音频，如果不满意可以返回重新录制或上传',
+  'voiceClone.selectedDuration': '已选择有效片段：{duration}秒',
+  'voiceClone.trim': '对选择区域进行裁剪',
+  'voiceClone.reset': '重置',
+  'voiceClone.play': '播放',
+  'voiceClone.pause': '暂停',
+  'voiceClone.cancel': '取消',
+  'voiceClone.nextStep': '下一步',
+  'voiceClone.prevStep': '上一步',
+  'voiceClone.upload': '上传音频',
+  'voiceClone.pleaseSelectAudio': '请先选择音频文件',
+  'voiceClone.durationError': '音频时长必须在8-60秒之间',
+  'voiceClone.loadAudioFailed': '加载音频失败',
+  'voiceClone.trimSuccess': '裁剪成功',
+  'voiceClone.resetSuccess': '重置成功',
+  'voiceClone.uploadSuccess': '上传成功',
+  'voiceClone.uploadFailed': '上传失败',
+  'voiceClone.updateNameSuccess': '名称更新成功',
+  'voiceClone.updateNameFailed': '名称更新失败',
+  'voiceClone.playFailed': '播放失败',
 }

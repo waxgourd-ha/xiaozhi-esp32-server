@@ -18,7 +18,7 @@ const routes = [
       return import('../views/roleConfig.vue')
     }
   },
-   {
+  {
     path: '/voice-print',
     name: 'VoicePrint',
     component: function () {
@@ -108,6 +108,28 @@ const routes = [
     meta: {
       requiresAuth: true,
       title: 'OTA管理'
+    }
+  },
+  {
+    path: '/voice-resource-management',
+    name: 'VoiceResourceManagement',
+    component: function () {
+      return import('../views/VoiceResourceManagement.vue')
+    },
+    meta: {
+      requiresAuth: true,
+      title: '音色资源开通'
+    }
+  },
+  {
+    path: '/voice-clone-management',
+    name: 'VoiceCloneManagement',
+    component: function () {
+      return import('../views/VoiceCloneManagement.vue')
+    },
+    meta: {
+      requiresAuth: true,
+      title: '音色克隆管理'
     }
   },
   {

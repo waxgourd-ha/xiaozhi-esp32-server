@@ -161,9 +161,31 @@ public interface ErrorCode {
     int MQTT_SECRET_LENGTH_INSECURE = 10123; // mqtt密钥长度不安全
     int MQTT_SECRET_CHARACTER_INSECURE = 10124; // mqtt密钥必须同时包含大小写字母
     int MQTT_SECRET_WEAK_PASSWORD = 10125; // mqtt密钥包含弱密码
-    
-    // 字典相关错误码
     int DICT_LABEL_DUPLICATE = 10128; // 字典标签重复
-    // 模型相关错误码
-    int MODEL_TYPE_PROVIDE_CODE_NOT_NULL = 10129; // modelType和provideCode不能为空
+    int SM2_KEY_NOT_CONFIGURED = 10129; // SM2密钥未配置
+    int SM2_DECRYPT_ERROR = 10130; // SM2解密失败
+    int MODEL_TYPE_PROVIDE_CODE_NOT_NULL = 10131; // modelType和provideCode不能为空
+
+    // 聊天记录相关错误码
+    int CHAT_HISTORY_NO_PERMISSION = 10132; // 没有权限查看该智能体的聊天记录
+    int CHAT_HISTORY_SESSION_ID_NOT_NULL = 10133; // 会话ID不能为空
+    int CHAT_HISTORY_AGENT_ID_NOT_NULL = 10134; // 智能体ID不能为空
+    int CHAT_HISTORY_DOWNLOAD_FAILED = 10135; // 聊天记录下载失败
+    int DOWNLOAD_LINK_EXPIRED = 10136; // 下载链接已过期或无效
+    int DOWNLOAD_LINK_INVALID = 10137; // 下载链接无效
+    int CHAT_ROLE_USER = 10138; // 用户角色
+    int CHAT_ROLE_AGENT = 10139; // 智能体角色
+    
+    // 声音克隆相关错误码
+    int VOICE_CLONE_AUDIO_EMPTY = 10140; // 音频文件不能为空
+    int VOICE_CLONE_NOT_AUDIO_FILE = 10141; // 只支持音频文件
+    int VOICE_CLONE_AUDIO_TOO_LARGE = 10142; // 音频文件大小不能超过10MB
+    int VOICE_CLONE_UPLOAD_FAILED = 10143; // 上传失败
+    int VOICE_CLONE_RECORD_NOT_EXIST = 10144; // 声音克隆记录不存在
+    int VOICE_RESOURCE_INFO_EMPTY = 10145; // 音色资源信息不能为空
+    int VOICE_RESOURCE_PLATFORM_NAME_EMPTY = 10146; // 平台名称不能为空
+    int VOICE_RESOURCE_ID_EMPTY = 10147; // 音色ID不能为空
+    int VOICE_RESOURCE_ACCOUNT_EMPTY = 10148; // 归属账号不能为空
+    int VOICE_RESOURCE_DELETE_ID_EMPTY = 10149; // 删除的音色资源ID不能为空
+    int VOICE_RESOURCE_NO_PERMISSION = 10150; // 您没有权限操作该记录
 }

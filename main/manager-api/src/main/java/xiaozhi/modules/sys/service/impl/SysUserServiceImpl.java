@@ -197,10 +197,31 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUserEntit
      */
     private String generatePassword() {
         StringBuilder password = new StringBuilder();
-        for (int i = 0; i < 12; i++) {
+        
+        // 确保包含至少一个数字
+        password.append("0123456789".charAt(random.nextInt(10)));
+        // 确保包含至少一个小写字母
+        password.append("abcdefghijklmnopqrstuvwxyz".charAt(random.nextInt(26)));
+        // 确保包含至少一个大写字母
+        password.append("ABCDEFGHIJKLMNOPQRSTUVWXYZ".charAt(random.nextInt(26)));
+        // 确保包含至少一个特殊符号
+        password.append("!@#$%^&*()".charAt(random.nextInt(10)));
+        
+        // 生成剩余的8个字符
+        for (int i = 4; i < 12; i++) {
             password.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
         }
-        return password.toString();
+        
+        // 打乱密码中字符的顺序
+        char[] passwordChars = password.toString().toCharArray();
+        for (int i = 0; i < passwordChars.length; i++) {
+            int randomIndex = random.nextInt(passwordChars.length);
+            char temp = passwordChars[i];
+            passwordChars[i] = passwordChars[randomIndex];
+            passwordChars[randomIndex] = temp;
+        }
+        
+        return new String(passwordChars);
     }
 
     @Override
