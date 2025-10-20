@@ -10,6 +10,7 @@ import threading
 import traceback
 import subprocess
 import websockets
+
 from core.utils.util import (
     extract_json_from_string,
     check_vad_update,
@@ -31,8 +32,8 @@ from core.providers.asr.dto.dto import InterfaceType
 from core.handle.textHandle import handleTextMessage
 from core.providers.tools.unified_tool_handler import UnifiedToolHandler
 from plugins_func.loadplugins import auto_import_modules
-from plugins_func.register import Action, ActionResponse
-from core.auth import AuthMiddleware, AuthenticationError
+from plugins_func.register import Action
+from core.auth import AuthenticationError
 from config.config_loader import get_private_config_from_api
 from core.providers.tts.dto.dto import ContentType, TTSMessageDTO, SentenceType
 from config.logger import setup_logging, build_module_string, create_connection_logger
@@ -67,7 +68,6 @@ class ConnectionHandler:
         self.logger = setup_logging()
         self.server = server  # 保存server实例的引用
 
-        self.auth = AuthMiddleware(config)
         self.need_bind = False
         self.bind_code = None
         self.read_config_from_api = self.config.get("read_config_from_api", False)
@@ -164,25 +164,6 @@ class ConnectionHandler:
         try:
             # 获取并验证headers
             self.headers = dict(ws.request.headers)
-
-            if self.headers.get("device-id", None) is None:
-                # 尝试从 URL 的查询参数中获取 device-id
-                from urllib.parse import parse_qs, urlparse
-
-                # 从 WebSocket 请求中获取路径
-                request_path = ws.request.path
-                if not request_path:
-                    self.logger.bind(tag=TAG).error("无法获取请求路径")
-                    return
-                parsed_url = urlparse(request_path)
-                query_params = parse_qs(parsed_url.query)
-                if "device-id" in query_params:
-                    self.headers["device-id"] = query_params["device-id"][0]
-                    self.headers["client-id"] = query_params["client-id"][0]
-                else:
-                    await ws.send("端口正常，如需测试连接，请使用test_page.html")
-                    await self.close(ws)
-                    return
             real_ip = self.headers.get("x-real-ip") or self.headers.get(
                 "x-forwarded-for"
             )
@@ -194,12 +175,10 @@ class ConnectionHandler:
                 f"{self.client_ip} conn - Headers: {self.headers}"
             )
 
-            # 进行认证
-            await self.auth.authenticate(self.headers)
+            self.device_id = self.headers.get("device-id", None)
 
             # 认证通过,继续处理
             self.websocket = ws
-            self.device_id = self.headers.get("device-id", None)
 
             # 检查是否来自MQTT连接
             request_path = ws.request.path

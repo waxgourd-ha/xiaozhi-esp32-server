@@ -31,16 +31,10 @@ server:
   auth:
     # 是否启用认证
     enabled: false
-    # 设备的token，可以在编译固件的环节，写入你自己定义的token
-    # 固件上的token和以下的token如果能对应，才能连接本服务端
-    tokens:
-      - token: "your-token1" # 设备1的token
-        name: "your-device-name1"  # 设备1标识
-      - token: "your-token2"  # 设备2的token
-        name: "your-device-name2" # 设备2标识
-    # 可选:设备白名单，如果设置了白名单，那么白名单的机器无论是什么token都可以连接。
-    #allowed_devices:
-    #  - "24:0A:C4:1D:3B:F0"  # MAC地址列表
+    # 白名单设备ID列表
+    # 如果属于白名单内的设备，不校验token，直接放行
+    allowed_devices:
+      - "11:22:33:44:55:66"
  # MQTT网关配置，用于通过OTA下发到设备，根据mqtt_gateway的.env文件配置，格式为host:port
   mqtt_gateway: null
   # MQTT签名密钥，用于生成MQTT连接密码，根据mqtt_gateway的.env文件配置

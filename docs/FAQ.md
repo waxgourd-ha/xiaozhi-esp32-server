@@ -80,9 +80,10 @@ VAD:
 10、[新闻插件源配置指南](./newsnow_plugin_config.md)<br/>
 
 ### 9、语音克隆、本地语音部署相关教程
-1、[如何部署集成index-tts本地语音](./index-stream-integration.md)<br/>
-2、[如何部署集成fish-speech本地语音](./fish-speech-integration.md)<br/>
-3、[如何部署集成PaddleSpeech本地语音](./paddlespeech-deploy.md)<br/>
+1、[如何在智控台克隆音色](./huoshan-streamTTS-voice-cloning.md)<br/>
+2、[如何部署集成index-tts本地语音](./index-stream-integration.md)<br/>
+3、[如何部署集成fish-speech本地语音](./fish-speech-integration.md)<br/>
+4、[如何部署集成PaddleSpeech本地语音](./paddlespeech-deploy.md)<br/>
 
 ### 10、性能测试教程
 1、[各组件速度测试指南](./performance_tester.md)<br/>

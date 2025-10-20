@@ -133,10 +133,8 @@
             <div class="connection-controls">
                 <input type="text" id="otaUrl" value="http://127.0.0.1:8002/xiaozhi/ota/"
                     placeholder="OTA服务器地址，如：http://127.0.0.1:8002/xiaozhi/ota/" />
-                <input type="text" id="serverUrl" value="ws://127.0.0.1:8000/xiaozhi/v1/"
-                    placeholder="WebSocket服务器地址，如：ws://127.0.0.1:8000/xiaozhi/v1/" />
+                <input type="text" id="serverUrl" value="" readonly disabled placeholder="点击连接按钮后，自动从OTA接口获取" />
                 <button id="connectButton">连接</button>
-                <button id="authTestButton">测试认证</button>
             </div>
         </div>
 
@@ -714,7 +712,7 @@
             localStorage.setItem('wsUrl', url);
 
             try {
-                const ws = await webSocketConnect(otaUrl, url, config)
+                const ws = await webSocketConnect(otaUrl, config)
                 if (ws === undefined) {
                     return
                 }
@@ -756,7 +754,7 @@
                     messageInput.disabled = true;
                     sendTextButton.disabled = true;
                     recordButton.disabled = true;
-                    stopButton.disabled = true;
+                    // stopButton.disabled = true;
                 };
 
                 websocket.onerror = (error) => {
@@ -1009,7 +1007,6 @@
         // 初始化事件监听器
         function initEventListeners() {
             connectButton.addEventListener('click', connectToServer);
-            document.getElementById('authTestButton').addEventListener('click', testAuthentication);
 
             // 设备配置面板折叠/展开
             const toggleButton = document.getElementById('toggleConfig');
@@ -1049,11 +1046,6 @@
                 document.getElementById('otaUrl').value = savedOtaUrl;
             }
 
-            const savedWsUrl = localStorage.getItem('wsUrl');
-            if (savedWsUrl) {
-                document.getElementById('serverUrl').value = savedWsUrl;
-            }
-
             // 切换面板显示
             toggleButton.addEventListener('click', () => {
                 const isExpanded = configPanel.classList.contains('expanded');
@@ -1089,107 +1081,6 @@
             });
 
             window.addEventListener('resize', initVisualizer);
-        }
-
-        // 测试认证
-        async function testAuthentication() {
-            log('开始测试认证...', 'info');
-
-            const config = getConfig();
-
-            // 显示服务器配置
-            log('-------- 服务器认证配置检查 --------', 'info');
-            log('请确认config.yaml中的auth配置：', 'info');
-            log('1. server.auth.enabled 为 false 或服务器已正确配置认证', 'info');
-            log('2. 如果启用了认证，请确认使用了正确的token', 'info');
-            log(`3. 或者在allowed_devices中添加了测试设备MAC：${config.deviceMac}`, 'info');
-
-            const serverUrl = serverUrlInput.value.trim();
-            if (!serverUrl) {
-                log('请输入服务器地址', 'error');
-                return;
-            }
-
-            // 测试连接
-            log('尝试不同认证参数的连接：', 'info');
-
-            // 测试1: 无参数连接
-            try {
-                log('测试1: 尝试无参数连接...', 'info');
-                const ws1 = new WebSocket(serverUrl);
-
-                ws1.onopen = () => {
-                    log('测试1成功: 无参数可连接，服务器可能没有启用认证', 'success');
-                    ws1.close();
-                };
-
-                ws1.onerror = (error) => {
-                    log('测试1失败: 无参数连接被拒绝，服务器可能启用了认证', 'error');
-                };
-
-                // 5秒后关闭测试连接
-                setTimeout(() => {
-                    if (ws1.readyState === WebSocket.CONNECTING || ws1.readyState === WebSocket.OPEN) {
-                        ws1.close();
-                    }
-                }, 5000);
-            } catch (error) {
-                log(`测试1出错: ${error.message}`, 'error');
-            }
-
-            // 测试2: 带参数连接
-            setTimeout(async () => {
-                try {
-                    log('测试2: 尝试带token参数连接...', 'info');
-
-                    let url = new URL(serverUrl);
-                    url.searchParams.append('token', config.token);
-                    url.searchParams.append('device_id', config.deviceId);
-                    url.searchParams.append('device_mac', config.deviceMac);
-
-                    const ws2 = new WebSocket(url.toString());
-
-                    ws2.onopen = () => {
-                        log('测试2成功: 带token参数可连接', 'success');
-
-                        // 尝试发送hello消息
-                        const helloMsg = {
-                            type: 'hello',
-                            device_id: config.deviceId,
-                            device_mac: config.deviceMac,
-                            token: config.token
-                        };
-
-                        ws2.send(JSON.stringify(helloMsg));
-                        log('已发送hello测试消息', 'info');
-
-                        // 监听响应
-                        ws2.onmessage = (event) => {
-                            try {
-                                const response = JSON.parse(event.data);
-                                if (response.type === 'hello' && response.session_id) {
-                                    log(`测试完全成功! 收到hello响应，会话ID: ${response.session_id}`, 'success');
-                                    ws2.close();
-                                }
-                            } catch (e) {
-                                log(`收到非JSON响应: ${event.data}`, 'info');
-                            }
-                        };
-
-                        // 5秒后关闭
-                        setTimeout(() => ws2.close(), 5000);
-                    };
-
-                    ws2.onerror = (error) => {
-                        log('测试2失败: 带token参数连接被拒绝', 'error');
-                        log('请检查token是否正确，或服务器是否接受URL参数认证', 'error');
-                    };
-                } catch (error) {
-                    log(`测试2出错: ${error.message}`, 'error');
-                }
-            }, 6000);
-
-            log('认证测试已启动，请查看测试结果...', 'info');
         }
 
         // 帮助函数：ArrayBuffer转Base64

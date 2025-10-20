@@ -1,13 +1,17 @@
 # IndexStreamTTS 使用指南
 
 ## 环境准备
-### 1. 克隆项目 （注意这里使用的为VLLM1.0的Releases版本）
+### 1. 克隆项目 
 ```bash 
-https://github.com/Ksuriuri/index-tts-vllm/releases/tag/IndexTTS-vLLM-1.0
+git clone https://github.com/Ksuriuri/index-tts-vllm.git
 ```
 进入解压后的目录
 ```bash
 cd index-tts-vllm
+```
+切换到指定版本 (使用VLLM-0.10.2的历史版本)
+```bash
+git checkout 224e8d5e5c8f66801845c66b30fa765328fd0be3
 ```
 
 ### 2. 创建并激活 conda 环境
@@ -34,7 +38,7 @@ Cuda compilation tools, release 12.8, V12.8.89
 ```bash
 pip install torch torchvision
 ```
-需要 pytorch 版本 2.8.0（对应 vllm 0.10.2），具体安装指令请参考：[pytorch 官网](https://pytorch.org/get-started/locally/)  
+需要 pytorch 版本 2.8.0（对应 vllm 0.10.2），具体安装指令请参考：[pytorch 官网](https://pytorch.org/get-started/locally/)
 
 ### 4. 安装依赖
 ```bash 
@@ -42,6 +46,7 @@ pip install -r requirements.txt
 ```
 
 ### 5. 下载模型权重
+### 方案一：下载官方权重文件后转换
 此为官方权重文件，下载到本地任意路径即可，支持 IndexTTS-1.5 的权重  
 | HuggingFace                                                   | ModelScope                                                          |
 |---------------------------------------------------------------|---------------------------------------------------------------------|
@@ -49,7 +54,7 @@ pip install -r requirements.txt
 | [IndexTTS-1.5](https://huggingface.co/IndexTeam/IndexTTS-1.5) | [IndexTTS-1.5](https://modelscope.cn/models/IndexTeam/IndexTTS-1.5) |
 
 下面以ModelScope的安装方法为例  
-### 请注意：git需要安装并初始化启用lfs（如已安装可以跳过）
+#### 请注意：git需要安装并初始化启用lfs（如已安装可以跳过）
 ```bash
 sudo apt-get install git-lfs
 git lfs install
@@ -61,7 +66,7 @@ cd model_dir
 git clone https://www.modelscope.cn/IndexTeam/IndexTTS-1.5.git
 ```
 
-### 5. 模型权重转换
+#### 模型权重转换
 ```bash 
 bash convert_hf_format.sh /path/to/your/model_dir
 ```
@@ -169,6 +174,8 @@ chmod +x start_api.sh
 ```bash
 tail -f tmp/server.log
 ```
+如果显卡内存足够，可在脚本中添加启动参数 ----gpu_memory_utilization 来调整显存占用比例，默认值为 0.25
+
 ## 音色配置
 index-tts-vllm支持通过配置文件注册自定义音色，支持单音色和混合音色配置。  
 在项目根目录下的assets/speaker.json文件中配置自定义音色
@@ -184,5 +191,5 @@ index-tts-vllm支持通过配置文件注册自定义音色，支持单音色和
     ]
 }
 ```
-### 注意 （需重启服务进行注册）
+### 注意 （配置角色后需重启服务进行音色注册）
 添加后需在智控台中添加相应的说话人（单模块则更换相应的voice）
